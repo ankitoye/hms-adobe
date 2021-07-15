@@ -1,13 +1,27 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { UserTableComponent } from './user-table/user-table.component';
+import { DepartmentViewComponent } from './department-view/department-view.component';
+import { HospitalViewComponent } from './hospital-view/hospital-view.component';
 
 
 const routes: Routes = [
   {
-    path: 'user-table',
-    component: UserTableComponent
-  }
+    path: '',
+    component: HospitalViewComponent
+  },
+  {
+    path: 'hospitals',
+    component: HospitalViewComponent
+  },
+  {
+    path: 'departments',
+    component: DepartmentViewComponent
+  },
+  {
+    path: '**',
+    component: HospitalViewComponent
+  },
+
 ];
 
 @NgModule({

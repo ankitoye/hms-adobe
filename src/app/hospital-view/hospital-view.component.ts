@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-user-table',
-  templateUrl: './user-table.component.html',
-  styleUrls: ['./user-table.component.scss']
+  selector: 'hospital-view',
+  templateUrl: './hospital-view.component.html',
+  styleUrls: ['./hospital-view.component.scss']
 })
-export class UserTableComponent implements OnInit {
-  userTable: FormGroup;
+export class HospitalViewComponent implements OnInit {
+  hospitalTable: FormGroup;
   control: FormArray;
   mode: boolean;
   touchedRows: any;
@@ -15,21 +16,21 @@ export class UserTableComponent implements OnInit {
     { hospitalName: 'KIMS', contactNumber: '9632587410' },
     { hospitalName: 'CSI Mission Hospital', contactNumber: '9685321470' }
   ];
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private router: Router) { }
 
   ngOnInit(): void {
     this.touchedRows = [];
-    this.userTable = this.fb.group({
+    this.hospitalTable = this.fb.group({
       tableRows: this.fb.array([])
     });
-    this.addRow();
     this.data.forEach(formData => {
       this.addRow(formData);
     });
+    this.addRow();
   }
 
   ngAfterOnInit() {
-    this.control = this.userTable.get('tableRows') as FormArray;
+    this.control = this.hospitalTable.get('tableRows') as FormArray;
   }
 
   initiateForm(formData?: any): FormGroup {
@@ -43,17 +44,17 @@ export class UserTableComponent implements OnInit {
         formData ? formData.contactNumber : '',
         [Validators.required, Validators.maxLength(10)]
       ],
-      isEditable: [true]
+      isEditable: [false]
     });
   }
 
   addRow(formData?: any) {
-    const control = this.userTable.get('tableRows') as FormArray;
+    const control = this.hospitalTable.get('tableRows') as FormArray;
     control.push(this.initiateForm(formData));
   }
 
   deleteRow(index: number) {
-    const control = this.userTable.get('tableRows') as FormArray;
+    const control = this.hospitalTable.get('tableRows') as FormArray;
     control.removeAt(index);
   }
 
@@ -65,24 +66,27 @@ export class UserTableComponent implements OnInit {
     group.get('isEditable').setValue(false);
   }
 
+  viewDepartments(group: FormGroup) {
+    console.log(group.value)
+    this.router.navigate(["/departments"], {
+      queryParams: { hospitalName: group.value.hospitalName }
+    })
+  }
+
   saveUserDetails() {
-    console.log(this.userTable.value);
+    console.log(this.hospitalTable.value);
   }
 
   get getFormControls() {
-    const control = this.userTable.get('tableRows') as FormArray;
+    const control = this.hospitalTable.get('tableRows') as FormArray;
     return control;
   }
 
   submitForm() {
-    const control = this.userTable.get('tableRows') as FormArray;
+    const control = this.hospitalTable.get('tableRows') as FormArray;
     this.touchedRows = control.controls
       .filter(row => row.touched)
       .map(row => row.value);
     console.log(this.touchedRows);
-  }
-
-  toggleTheme() {
-    this.mode = !this.mode;
   }
 }

@@ -1,0 +1,67 @@
+<header>
+    <div>
+        <h1>{{currentHospitalName}} - Department List</h1>
+    </div>
+</header>
+<div class="button-row">
+    <button mat-flat-button>Sort by Department Name</button>
+    <a routerLink="/"><button mat-flat-button color="primary">Back</button></a>
+</div>
+<form [formGroup]="departmentTable">
+    <table class="table table-border" [ngClass]="{'table-dark': mode}">
+        <thead class="text-nowrap">
+            <th>Department Name <span class="ui-column-resizer" dragableColumn> </span></th>
+            <th>Head of Department</th>
+            <th>Contact Number</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls ; let i=index">
+                <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
+                    <td>
+                        <mat-form-field>
+                            <input matInput type="text" formControlName="departmentName">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <input matInput type="text" formControlName="head">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <input matInput type="text" formControlName="contactNumber">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-icon class="delete" (click)="deleteRow(i)">delete_forever</mat-icon>
+                        <mat-icon class="done" (click)="doneRow(group)">done</mat-icon>
+                    </td>
+                </tr>
+                <tr *ngIf="!group.get('isEditable').value">
+                    <td>
+                        {{group.get('departmentName').value}}
+                    </td>
+                    <td>
+                        {{group.get('head').value}}
+                    </td>
+                    <td>
+                        {{group.get('contactNumber').value}}
+                    </td>
+                    <td>
+                        <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+    <div class="action-container">
+        <button mat-raised-button type="submit" (click)="addRow()">Add row</button>
+        <button mat-raised-button [disabled]="departmentTable.invalid" type="submit"
+            (click)="submitForm()">Submit</button>
+    </div>
+</form>
+<div class="output">
+    <p>Form Data: {{departmentTable.value | json}}</p>
+    <p>Is Valid: {{departmentTable.valid}}</p>
+</div>
